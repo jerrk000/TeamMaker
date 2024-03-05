@@ -23,10 +23,10 @@ def create_app():
 
     app.register_blueprint(test_routes, url_prefix='/')
     
-    #from .database.models import Player
+    from .database.models import Player
 
-    #with app.app_context():
-    #db.create_all()
+    with app.app_context():
+        db.create_all()
     
     return app
 
