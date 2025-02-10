@@ -10,6 +10,9 @@ from .. import db
 class Player(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(150), default = 'anonymous')
+    email = db.Column(db.String(150))
+    password_hash = db.Column(db.String(150))
+    friendcode = db.Column(db.String(150))
     played_matches = db.Column(db.Integer, default=0)
     won_matches = db.Column(db.Integer, default=0)
     lost_matches = db.Column(db.Integer, default=0)

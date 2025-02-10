@@ -58,4 +58,12 @@ source deactivate
 deactivate
 ```
 
+### Run this in the folder where main.py is located, to activate flask API for other devices in network
+```bash
+flask --app main run --host=0.0.0.0
+```
 
+### Then start the expo application by doing this in the folder where app.json is located (i think there is currently also a README.md file)
+```bash
+npx expo start
+```
