@@ -2,10 +2,14 @@
 import React, { useEffect, useState } from "react";
 import { View, Text, FlatList, ActivityIndicator, StyleSheet } from "react-native";
 
-const API_URL = "http://192.168.0.159:5000/";
+const API_URL = "http://192.168.0.32:5000/";
 
-export const DataList = () => {
-  const [data, setData] = useState([]);
+type HelloWorldType = {
+    name: string;
+  };
+
+export const friendrequest = () => {
+  const [data, setData] = useState<HelloWorldType | null>(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -30,29 +34,56 @@ export const DataList = () => {
       {loading ? (
         <ActivityIndicator size="large" color="#0000ff" />
       ) : (
-        data && ( // 👈 Make sure "data" exists before accessing properties
+        data && (
             <View style={styles.item}>
                 <Text style={styles.text}>Test Component</Text>
                 <Text style={styles.text}>{data.name}</Text>
             </View>
         )
-        
-        /*
-        <FlatList
-          data={data}
-          keyExtractor={(item) => item.id.toString()}
-          nestedScrollEnabled={true}  // ✅ Fix for Android
-          renderItem={({ item }) => (
-            <View style={styles.item}>
-              <Text style={styles.text}>{item.name}</Text>
-            </View>
-          )}
-        />
-        */
       )}
     </View>
   );
 };
+
+
+export const DataList = () => {
+    const [data, setData] = useState<HelloWorldType | null>(null);
+    const [loading, setLoading] = useState(true);
+  
+    useEffect(() => {
+      fetchData();
+    }, []);
+  
+    const fetchData = async () => {
+      try {
+        const response = await fetch(API_URL);
+        const json = await response.json();
+        setData(json);
+        console.log('Fetched Data:', json)
+      } catch (error) {
+        console.error("Error fetching data:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+  
+    return (
+      <View style={styles.container}>
+        {loading ? (
+          <ActivityIndicator size="large" color="#0000ff" />
+        ) : (
+          data && (
+              <View style={styles.item}>
+                  <Text style={styles.text}>Test Component</Text>
+                  <Text style={styles.text}>{data.name}</Text>
+              </View>
+          )
+        
+        )}
+      </View>
+    );
+  };
+
 
 const styles = StyleSheet.create({
   container: {

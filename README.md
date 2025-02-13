@@ -1,5 +1,5 @@
 # TeamMaker
-App written in React Native and Python, which can split up people in balanced teams
+App written in React Native and Python, which can split up people in balanced teams, add friends, track winrate, lets you choose different gamemodes and see your own stats (everything needs to be implemented first)
 
 # Good-To-Knows
 
@@ -37,13 +37,13 @@ pip freeze > requirements.txt
 pip install -r requirements.txt
 ```
 
-## Running The App
+## Running The App (deprecated, use flask command at the bottom)
 
 ```bash
 python main.py
 ```
 
-## Viewing The App
+## Viewing The App (deprecated, as it is now on expo go)
 
 Go to `http://127.0.0.1:5000`
 
@@ -57,6 +57,9 @@ source deactivate
 ```bash
 deactivate
 ```
+
+### Adapt local ip address of laptop
+Local ip address for laptop in network changes, find out by using the command "ip a" in terminal (ip address under wlp3s0)
 
 ### Run this in the folder where main.py is located, to activate flask API for other devices in network
 ```bash
