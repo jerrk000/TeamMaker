@@ -1,18 +1,20 @@
 import React, { useState } from 'react';
-import { View, TextInput, FlatList, Text, StyleSheet, TouchableOpacity } from 'react-native';
+import { View, TextInput, FlatList, Text, StyleSheet, TouchableOpacity, Button } from 'react-native';
+import { useNavigation } from '@react-navigation/native';
+import { RootStackParamList } from '../navigation/AppNavigator';
+import { StackNavigationProp } from '@react-navigation/stack';
 
-// Define the type for the data items
 type Item = {
   id: string;
   name: string;
 };
 
-const SearchFilterExample = () => {
+const HomeScreen = () => {
+  const navigation = useNavigation<StackNavigationProp<RootStackParamList, 'Home'>>();
   const [searchQuery, setSearchQuery] = useState<string>('');
   const [filteredData, setFilteredData] = useState<Item[]>([]);
   const [selectedItems, setSelectedItems] = useState<Item[]>([]);
 
-  // Sample data
   const data: Item[] = [
     { id: '1', name: 'Apple' },
     { id: '2', name: 'Banana' },
@@ -24,7 +26,6 @@ const SearchFilterExample = () => {
     { id: '8', name: 'Honeydew' },
   ];
 
-  // Handle search functionality
   const handleSearch = (query: string) => {
     setSearchQuery(query);
     const filtered = data.filter((item) =>
@@ -33,36 +34,33 @@ const SearchFilterExample = () => {
     setFilteredData(filtered);
   };
 
-  // Handle item selection
   const handleItemPress = (item: Item) => {
-    // Check if the item is already selected
     if (!selectedItems.some((selected) => selected.id === item.id)) {
       setSelectedItems([...selectedItems, item]);
     }
   };
 
-  // Handle item removal from selected items
   const handleRemoveItem = (item: Item) => {
     const updatedItems = selectedItems.filter((selected) => selected.id !== item.id);
     setSelectedItems(updatedItems);
   };
 
-  // Check if an item is selected
   const isItemSelected = (item: Item) => {
     return selectedItems.some((selected) => selected.id === item.id);
   };
 
+  const handleSave = () => {
+    navigation.navigate('SavedItems', { selectedItems });
+  };
+
   return (
     <View style={styles.container}>
-      {/* Search Bar */}
       <TextInput
         style={styles.searchBar}
         placeholder="Search..."
         value={searchQuery}
         onChangeText={handleSearch}
       />
-
-      {/* List of Filtered Items */}
       <FlatList
         data={filteredData.length > 0 ? filteredData : data}
         keyExtractor={(item) => item.id}
@@ -76,8 +74,6 @@ const SearchFilterExample = () => {
           </TouchableOpacity>
         )}
       />
-
-      {/* List of Selected Items */}
       <Text style={styles.selectedTitle}>Selected Items:</Text>
       <FlatList
         data={selectedItems}
@@ -91,6 +87,7 @@ const SearchFilterExample = () => {
           </View>
         )}
       />
+      <Button title="Save Selected Items" onPress={handleSave} />
     </View>
   );
 };
@@ -133,4 +130,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default SearchFilterExample;
+export default HomeScreen;
