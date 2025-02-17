@@ -1,6 +1,7 @@
 import React from 'react';
 import { View, Text, FlatList, StyleSheet } from 'react-native';
 import { useLocalSearchParams } from 'expo-router';
+import { useListStore } from "../../store/useListStore";
 
 type Item = {
   id: string;
@@ -8,21 +9,18 @@ type Item = {
 };
 
 const SavedItemsScreen = () => {
-  const { selectedItems } = useLocalSearchParams();
-  const items: Item[] = JSON.parse(selectedItems as string);
+  const items = useListStore((state) => state.items); // Get items from Zustand
 
   return (
     <View style={styles.container}>
       <Text style={styles.savedTitle}>Saved Items:</Text>
-      <FlatList
-        data={items}
-        keyExtractor={(item) => item.id}
-        renderItem={({ item }) => (
-          <View style={styles.savedItem}>
-            <Text>{item.name}</Text>
-          </View>
-        )}
-      />
+      {items.length > 0 ? (
+        items.map((item) => (
+          <Text key={item.id}>{item.name}</Text> // Render the "name" property
+        ))
+      ) : (
+        <Text>No items found</Text>
+      )}
     </View>
   );
 };

@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { View, TextInput, FlatList, Text, StyleSheet, TouchableOpacity, Button } from 'react-native';
 import { useRouter } from 'expo-router';
+import { useListStore } from "../../store/useListStore";
 
 type Item = {
   id: string;
@@ -9,6 +10,7 @@ type Item = {
 
 const HomeScreen = () => {
   const router = useRouter();
+  const setItems = useListStore((state) => state.setItems);
   const [searchQuery, setSearchQuery] = useState<string>('');
   const [filteredData, setFilteredData] = useState<Item[]>([]);
   const [selectedItems, setSelectedItems] = useState<Item[]>([]);
@@ -48,9 +50,10 @@ const HomeScreen = () => {
   };
 
   const handleSave = () => {
+    setItems(selectedItems); // Store the list in Zustand
     router.push({
       pathname: '/(non-tabs)/SavedItemsScreen',
-      params: { selectedItems: JSON.stringify(selectedItems) },
+      //params: { selectedItems: JSON.stringify(selectedItems) },
     });
   };
 
