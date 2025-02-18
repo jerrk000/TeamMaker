@@ -42,7 +42,7 @@ const SavedItemsScreen = () => {
       <View style={styles.container}>
         {/* Upper Group */}
         <View style={styles.groupContainer}>
-          <Text style={styles.groupTitle}>Group 1</Text>
+          <Text style={[styles.groupTitle, {color: "#DC143C"}]}>Team</Text>
           <FlatList
             data={firstGroup}
             renderItem={renderItemUpper}
@@ -59,7 +59,7 @@ const SavedItemsScreen = () => {
 
         {/* Bottom Group */}
         <View style={styles.groupContainer}>
-          <Text style={styles.groupTitle}>Group 2</Text>
+          <Text style={[styles.groupTitle, {color: "#3498db"}]}>Team</Text>
           <FlatList
             data={secondGroup}
             renderItem={renderItemLower}
@@ -82,7 +82,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     padding: 16,
-    alignItems: "center"
+    alignItems: "center",
   },
   flatList: {
     alignItems: "center", // Ensures items are centered
@@ -95,6 +95,8 @@ const styles = StyleSheet.create({
     fontSize: 18,
     fontWeight: 'bold',
     marginBottom: 8,
+    textAlignVertical: "center",
+    textAlign: "center"
   },
   buttonContainer: {
     marginTop: 16,
