@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { View, Text, FlatList, StyleSheet, Button } from 'react-native';
 import { useListStore } from "../../store/useListStore";
 import BackgroundPicture from '@/components/ImageBackground';
@@ -11,6 +11,7 @@ type Item = {
 const SavedItemsScreen = () => {
   const items = useListStore((state) => state.items); // Get items from Zustand
   const setItems = useListStore((state) => state.setItems); // Get setItems function from Zustand
+  const [showAdditionalButtons, setShowAdditionalButtons] = useState(false);
 
   // Split the items into two groups
   const half = Math.ceil(items.length / 2);
@@ -52,10 +53,29 @@ const SavedItemsScreen = () => {
           />
         </View>
         
+         {/* Additional Buttons */}
+        {showAdditionalButtons && (
+        <View style={styles.buttonContainer}>
+          <Button
+            title="This team won"
+            onPress={() => alert('Additional Button 1 Pressed!')}
+          />
+        </View>
+        )}
+
         {/* Randomize Button */}
         <View style={styles.buttonContainer}>
           <Button title="Randomize Items" onPress={randomizeItems} />
         </View>
+
+        {showAdditionalButtons && (
+        <View style={styles.buttonContainer}>
+          <Button
+            title="This team won"
+            onPress={() => alert('Additional Button 2 Pressed!')}
+          />
+        </View>
+        )}
 
         {/* Bottom Group */}
         <View style={styles.groupContainer}>
@@ -69,9 +89,9 @@ const SavedItemsScreen = () => {
           />
         </View>
 
-        {/* Randomize Button */}
+        {/* Choose Winner Button */}
         <View style={styles.buttonContainer}>
-          <Button title="Choose winner" onPress={randomizeItems} />
+          <Button title="Choose winner" onPress={() => setShowAdditionalButtons(!showAdditionalButtons)} />
         </View>
       </View>
     </BackgroundPicture>
