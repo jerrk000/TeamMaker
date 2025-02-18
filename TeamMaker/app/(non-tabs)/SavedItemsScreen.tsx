@@ -1,49 +1,74 @@
-import React, { Component } from "react";
-import {
-  StyleSheet,
-  View,
-  PanResponder,
-  Animated
-} from "react-native";
+import React from 'react';
+import { View, Text, FlatList, StyleSheet } from 'react-native';
+import { useListStore } from "../../store/useListStore";
+import BackgroundPicture from '@/components/ImageBackground';
 
-export default class Draggable extends Component {  constructor() {
-    super();    this.state = {
-      pan: new Animated.ValueXY()
-    };
-  }
+type Item = {
+  id: string;
+  name: string;
+};
 
-  componentWillMount() {    // Add a listener for the delta value change
-    this._val = { x:0, y:0 }
-    this.state.pan.addListener((value) => this._val = value);    // Initialize PanResponder with move handling
-    this.panResponder = PanResponder.create({
-      onStartShouldSetPanResponder: (e, gesture) => true,
-      onPanResponderMove: Animated.event([
-        null, { dx: this.state.pan.x, dy: this.state.pan.y }
-      ]);
-      // adjusting delta value
-      this.state.pan.setValue({ x:0, y:0})
-    });
-  }
+const SavedItemsScreen = () => {
+  const items = useListStore((state) => state.items); // Get items from Zustand
 
-  render() {
-    const panStyle = {
-      transform: this.state.pan.getTranslateTransform()
-    }
-    return (
-        <Animated.View
-          {...this.panResponder.panHandlers}
-          style={[panStyle, styles.circle]}
-        />
-    );
-  }
-}
+  // Split the items into two groups
+  const half = Math.ceil(items.length / 2);
+  const firstGroup = items.slice(0, half);
+  const secondGroup = items.slice(half);
 
-let CIRCLE_RADIUS = 30;
-let styles = StyleSheet.create({
-  circle: {
-    backgroundColor: "skyblue",
-    width: CIRCLE_RADIUS * 2,
-    height: CIRCLE_RADIUS * 2,
-    borderRadius: CIRCLE_RADIUS
-  }
+  // Render item for FlatList
+  const renderItem = ({ item }: { item: Item }) => (
+    <View style={styles.item}>
+      <Text>{item.name}</Text> {/* Assuming each item has a 'name' property */}
+    </View>
+  );
+
+  return (
+    <BackgroundPicture>
+      <View style={styles.container}>
+        {/* Upper Group */}
+        <View style={styles.groupContainer}>
+          <Text style={styles.groupTitle}>Group 1</Text>
+          <FlatList
+            data={firstGroup}
+            renderItem={renderItem}
+            keyExtractor={(item) => item.id.toString()} // Assuming each item has an 'id'
+          />
+        </View>
+
+        {/* Bottom Group */}
+        <View style={styles.groupContainer}>
+          <Text style={styles.groupTitle}>Group 2</Text>
+          <FlatList
+            data={secondGroup}
+            renderItem={renderItem}
+            keyExtractor={(item) => item.id.toString()}
+          />
+        </View>
+      </View>
+    </BackgroundPicture>
+  );
+};
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    padding: 16,
+  },
+  groupContainer: {
+    flex: 1,
+    marginBottom: 16,
+  },
+  groupTitle: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    marginBottom: 8,
+  },
+  item: {
+    padding: 10,
+    borderBottomWidth: 1,
+    borderBottomColor: '#ccc',
+  },
 });
+
+export default SavedItemsScreen;
