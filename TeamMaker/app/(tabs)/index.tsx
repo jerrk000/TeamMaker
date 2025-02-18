@@ -24,6 +24,10 @@ const HomeScreen = () => {
     { id: '6', name: 'Fig' },
     { id: '7', name: 'Grape' },
     { id: '8', name: 'Honeydew' },
+    { id: '9', name: 'Moneydew' },
+    { id: '10', name: 'Funnydew' },
+    { id: '11', name: 'Mummydew' },
+    { id: '12', name: 'Sunnydew' },
   ];
 
   const handleSearch = (query: string) => {
