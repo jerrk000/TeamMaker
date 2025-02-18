@@ -1,45 +1,49 @@
-import React from 'react';
-import { View, Text, FlatList, StyleSheet } from 'react-native';
-import { useLocalSearchParams } from 'expo-router';
-import { useListStore } from "../../store/useListStore";
+import React, { Component } from "react";
+import {
+  StyleSheet,
+  View,
+  PanResponder,
+  Animated
+} from "react-native";
 
-type Item = {
-  id: string;
-  name: string;
-};
+export default class Draggable extends Component {  constructor() {
+    super();    this.state = {
+      pan: new Animated.ValueXY()
+    };
+  }
 
-const SavedItemsScreen = () => {
-  const items = useListStore((state) => state.items); // Get items from Zustand
+  componentWillMount() {    // Add a listener for the delta value change
+    this._val = { x:0, y:0 }
+    this.state.pan.addListener((value) => this._val = value);    // Initialize PanResponder with move handling
+    this.panResponder = PanResponder.create({
+      onStartShouldSetPanResponder: (e, gesture) => true,
+      onPanResponderMove: Animated.event([
+        null, { dx: this.state.pan.x, dy: this.state.pan.y }
+      ]);
+      // adjusting delta value
+      this.state.pan.setValue({ x:0, y:0})
+    });
+  }
 
-  return (
-    <View style={styles.container}>
-      <Text style={styles.savedTitle}>Saved Items:</Text>
-      {items.length > 0 ? (
-        items.map((item) => (
-          <Text key={item.id}>{item.name}</Text> // Render the "name" property
-        ))
-      ) : (
-        <Text>No items found</Text>
-      )}
-    </View>
-  );
-};
+  render() {
+    const panStyle = {
+      transform: this.state.pan.getTranslateTransform()
+    }
+    return (
+        <Animated.View
+          {...this.panResponder.panHandlers}
+          style={[panStyle, styles.circle]}
+        />
+    );
+  }
+}
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    padding: 16,
-  },
-  savedTitle: {
-    fontSize: 20,
-    fontWeight: 'bold',
-    marginBottom: 16,
-  },
-  savedItem: {
-    padding: 10,
-    borderBottomWidth: 1,
-    borderBottomColor: '#ccc',
-  },
+let CIRCLE_RADIUS = 30;
+let styles = StyleSheet.create({
+  circle: {
+    backgroundColor: "skyblue",
+    width: CIRCLE_RADIUS * 2,
+    height: CIRCLE_RADIUS * 2,
+    borderRadius: CIRCLE_RADIUS
+  }
 });
-
-export default SavedItemsScreen;
