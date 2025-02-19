@@ -2,10 +2,7 @@ import React, { useState } from 'react';
 import { View, TextInput, FlatList, Text, StyleSheet, TouchableOpacity, Button } from 'react-native';
 import { useRouter } from 'expo-router';
 import { useListStore } from "../../store/useListStore";
-import {
-  SafeAreaView,
-  SafeAreaProvider
-} from 'react-native-safe-area-context';
+import { SafeAreaView, SafeAreaProvider } from 'react-native-safe-area-context';
 
 
 type Item = {
@@ -61,7 +58,7 @@ const HomeScreen = () => {
   const handleSave = () => {
     setItems(selectedItems); // Store the list in Zustand
     router.push({
-      pathname: '/(non-tabs)/SavedItemsScreen',
+      pathname: '/(non-tabs)/MakeTeamsScreen',
       //params: { selectedItems: JSON.stringify(selectedItems) },
     });
   };
@@ -94,12 +91,14 @@ const HomeScreen = () => {
         keyExtractor={(item) => item.id}
         renderItem={({ item }) => (
           <View style={styles.selectedItem}>
-            <Text>{item.name}</Text>
+            <Text style={styles.playerlistitemtext}>{item.name}</Text>
             <TouchableOpacity onPress={() => handleRemoveItem(item)}>
               <Text style={styles.cross}>❌</Text>
             </TouchableOpacity>
           </View>
         )}
+        numColumns={3}
+        contentContainerStyle={styles.playernameflatList}
       />
       <Button title="Save Selected Items" onPress={handleSave} />
     </SafeAreaView>
@@ -138,10 +137,32 @@ const styles = StyleSheet.create({
     borderBottomWidth: 1,
     borderBottomColor: '#eee',
     backgroundColor: '#f9f9f9',
+    margin: 5,
+    borderWidth: 2, // Border thickness
+    borderColor: "#3498db", // Blue border color
+    borderRadius: 10, // Rounded corners
   },
   cross: {
     fontSize: 16,
     color: 'red',
+  },
+  playernameflatList: {
+    alignItems: "center", // Ensures items are centered
+  },
+  playerlistitemcontainer: {
+    width: 100,
+    height: 50,
+    backgroundColor: "#f9f9f9", // Light background
+    margin: 5,
+    justifyContent: "center",
+    alignItems: "center",
+    borderWidth: 2, // Border thickness
+    borderColor: "#3498db", // Blue border color
+    borderRadius: 10, // Rounded corners
+  },
+  playerlistitemtext: {
+    fontWeight: "bold",
+    color: "#3498db", // Blue
   },
 });
 
