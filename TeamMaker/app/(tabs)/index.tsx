@@ -2,6 +2,11 @@ import React, { useState } from 'react';
 import { View, TextInput, FlatList, Text, StyleSheet, TouchableOpacity, Button } from 'react-native';
 import { useRouter } from 'expo-router';
 import { useListStore } from "../../store/useListStore";
+import {
+  SafeAreaView,
+  SafeAreaProvider
+} from 'react-native-safe-area-context';
+
 
 type Item = {
   id: string;
@@ -16,18 +21,18 @@ const HomeScreen = () => {
   const [selectedItems, setSelectedItems] = useState<Item[]>([]);
 
   const data: Item[] = [
-    { id: '1', name: 'Apple' },
-    { id: '2', name: 'Banana' },
-    { id: '3', name: 'Cherry' },
-    { id: '4', name: 'Date' },
-    { id: '5', name: 'Elderberry' },
-    { id: '6', name: 'Fig' },
-    { id: '7', name: 'Grape' },
-    { id: '8', name: 'Honeydew' },
-    { id: '9', name: 'Moneydew' },
-    { id: '10', name: 'Funnydew' },
-    { id: '11', name: 'Mummydew' },
-    { id: '12', name: 'Sunnydew' },
+    { id: '1', name: 'Nikolaus' },
+    { id: '2', name: 'Silvester' },
+    { id: '3', name: 'David' },
+    { id: '4', name: 'Lukas' },
+    { id: '5', name: 'Anton' },
+    { id: '6', name: 'Maria' },
+    { id: '7', name: 'Josef' },
+    { id: '8', name: 'Mario' },
+    { id: '9', name: 'Simon' },
+    { id: '10', name: 'Markus' },
+    { id: '11', name: 'Bernd' },
+    { id: '12', name: 'Maximilian' },
   ];
 
   const handleSearch = (query: string) => {
@@ -62,7 +67,8 @@ const HomeScreen = () => {
   };
 
   return (
-    <View style={styles.container}>
+    <SafeAreaProvider>
+    <SafeAreaView style={styles.container}>
       <TextInput
         style={styles.searchBar}
         placeholder="Search..."
@@ -96,7 +102,8 @@ const HomeScreen = () => {
         )}
       />
       <Button title="Save Selected Items" onPress={handleSave} />
-    </View>
+    </SafeAreaView>
+    </SafeAreaProvider>
   );
 };
 
