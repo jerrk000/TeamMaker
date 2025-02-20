@@ -23,6 +23,9 @@ const data: Item[] = [
   { id: '10', name: 'Markus' },
   { id: '11', name: 'Bernd' },
   { id: '12', name: 'Maximilian' },
+  { id: '13', name: 'Markus Aurelius Dominikus' },
+  { id: '14', name: 'Maximilian Baximilian Raximus' },
+  { id: '15', name: 'Servus Versus Cersus' },
 ];
 
 const HomeScreen = () => {
@@ -45,6 +48,11 @@ const HomeScreen = () => {
       item.name.toLowerCase().includes(query.toLowerCase())
     );
     setFilteredData(filtered);
+  };
+
+  const clearSearch = () => {
+    setSearchQuery("");
+    setFilteredData(data);
   };
 
   const handleItemPress = (item: Item) => {
@@ -75,43 +83,58 @@ const HomeScreen = () => {
 
   return (
     <SafeAreaProvider>
-    <SafeAreaView style={styles.container}>
-      <TextInput
-        style={styles.searchBar}
-        placeholder="Search..."
-        value={searchQuery}
-        onChangeText={handleSearch}
-      />
-      <FlatList
-        data={filteredData.length > 0 ? filteredData : data}
-        keyExtractor={(item) => item.id}
-        renderItem={({ item }) => (
-          <TouchableOpacity onPress={() => handleItemPress(item)}>
-            <View style={styles.item}>
-              <Text>
-                {item.name} {isItemSelected(item) && '✔️'}
-              </Text>
-            </View>
-          </TouchableOpacity>
-        )}
-      />
-      <Text style={styles.selectedTitle}>Selected Items:</Text>
-      <FlatList
-        data={selectedItems}
-        keyExtractor={(item) => item.id}
-        renderItem={({ item }) => (
-          <View style={styles.selectedItem}>
-            <Text style={styles.playerlistitemtext}>{item.name}</Text>
-            <TouchableOpacity onPress={() => handleRemoveItem(item)}>
-              <Text style={styles.cross}>❌</Text>
+      <SafeAreaView style={styles.container}>
+        <View style={styles.searchContainer}>
+          <TextInput
+            style={styles.searchBar}
+            placeholder="Search..."
+            value={searchQuery}
+            onChangeText={handleSearch}
+          />
+          {searchQuery.length > 0 && (
+            <TouchableOpacity onPress={clearSearch} style={styles.clearButton}>
+              <Text style={styles.clearButtonText}>Clear</Text>
             </TouchableOpacity>
-          </View>
-        )}
-        numColumns={3}
-        contentContainerStyle={styles.playernameflatList}
-      />
-      <Button title="Save Selected Items" onPress={handleSave} />
-    </SafeAreaView>
+          )}
+        </View>
+        <FlatList
+          data={filteredData.length > 0 ? filteredData : data}
+          keyExtractor={(item) => item.id}
+          renderItem={({ item }) => (
+            <TouchableOpacity onPress={() => handleItemPress(item)}>
+              <View style={[
+                styles.item,
+                isItemSelected(item) ? styles.clickedItem : styles.noclickedItem
+              ]}>
+                <Text>
+                  {item.name}
+                </Text>
+              </View>
+            </TouchableOpacity>
+          )}
+        />
+        <Text style={styles.selectedTitle}>Selected Items: {selectedItems.length}</Text>
+          <FlatList
+            data={selectedItems}
+            keyExtractor={(item) => item.id}
+            renderItem={({ item }) => (
+              <View style={styles.selectedItem}>
+                <Text style={styles.playerlistitemtext}
+                numberOfLines={1} 
+                ellipsizeMode="tail">
+                  {item.name}</Text>
+                <TouchableOpacity onPress={() => handleRemoveItem(item)}>
+                  <Text 
+                  style={styles.cross}>❌</Text>
+                </TouchableOpacity>
+              </View>
+            )}
+            numColumns={3}
+            columnWrapperStyle={selectedItems.length === 1 ? { justifyContent: "center" } : {}}
+            contentContainerStyle={styles.playernameflatList}
+          />
+        <Button title="Save Selected Items" onPress={handleSave} />
+      </SafeAreaView>
     </SafeAreaProvider>
   );
 };
@@ -122,16 +145,41 @@ const styles = StyleSheet.create({
     padding: 16,
   },
   searchBar: {
+    flex: 1,
     height: 40,
     borderColor: 'gray',
     borderWidth: 1,
     paddingLeft: 8,
+  },
+  searchContainer: {
+    flexDirection: "row",
+    alignItems: "center",
+    paddingHorizontal: 10,
     marginBottom: 16,
+  },
+  clearButton: {
+    height: 40,
+    marginLeft: 10,
+    padding: 5,
+    borderColor: 'red',
+    borderWidth: 1,
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  clearButtonText: {
+    fontSize: 16,
+    color: 'red',
   },
   item: {
     padding: 10,
     borderBottomWidth: 1,
     borderBottomColor: '#ccc',
+  },
+  clickedItem: {
+    backgroundColor: '#C8E6C9',
+  },
+  noclickedItem: {
+    borderBottomColor: '#ccc', //unneeded, because already in item, but maybe customized later?
   },
   selectedTitle: {
     fontSize: 16,
@@ -173,6 +221,7 @@ const styles = StyleSheet.create({
   playerlistitemtext: {
     fontWeight: "bold",
     color: "#3498db", // Blue
+    maxWidth: 90,
   },
 });
 
