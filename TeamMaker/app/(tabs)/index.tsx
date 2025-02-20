@@ -10,27 +10,34 @@ type Item = {
   name: string;
 };
 
+const data: Item[] = [
+  { id: '1', name: 'Nikolaus' },
+  { id: '2', name: 'Silvester' },
+  { id: '3', name: 'David' },
+  { id: '4', name: 'Lukas' },
+  { id: '5', name: 'Anton' },
+  { id: '6', name: 'Maria' },
+  { id: '7', name: 'Josef' },
+  { id: '8', name: 'Mario' },
+  { id: '9', name: 'Simon' },
+  { id: '10', name: 'Markus' },
+  { id: '11', name: 'Bernd' },
+  { id: '12', name: 'Maximilian' },
+];
+
 const HomeScreen = () => {
   const router = useRouter();
   const setItems = useListStore((state) => state.setItems);
   const [searchQuery, setSearchQuery] = useState<string>('');
   const [filteredData, setFilteredData] = useState<Item[]>([]);
-  const [selectedItems, setSelectedItems] = useState<Item[]>([]);
+  const [selectedItems, setSelectedItems] = useState<Item[]>(() => {
+    // Initialize with the item that has id=1 //TODO change this to their own user
+    const initialItem = data.find(item => item.id === '1'); 
+    return initialItem ? [initialItem] : [];
+  });
 
-  const data: Item[] = [
-    { id: '1', name: 'Nikolaus' },
-    { id: '2', name: 'Silvester' },
-    { id: '3', name: 'David' },
-    { id: '4', name: 'Lukas' },
-    { id: '5', name: 'Anton' },
-    { id: '6', name: 'Maria' },
-    { id: '7', name: 'Josef' },
-    { id: '8', name: 'Mario' },
-    { id: '9', name: 'Simon' },
-    { id: '10', name: 'Markus' },
-    { id: '11', name: 'Bernd' },
-    { id: '12', name: 'Maximilian' },
-  ];
+
+  
 
   const handleSearch = (query: string) => {
     setSearchQuery(query);
@@ -42,7 +49,10 @@ const HomeScreen = () => {
 
   const handleItemPress = (item: Item) => {
     if (!selectedItems.some((selected) => selected.id === item.id)) {
-      setSelectedItems([...selectedItems, item]);
+      setSelectedItems([...selectedItems, item]); //add item if not already selected
+    }
+    else {
+      handleRemoveItem(item); //delete item if it was already selected
     }
   };
 
