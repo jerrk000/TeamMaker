@@ -31,6 +31,23 @@ const data: Item[] = [
 const HomeScreen = () => {
   const router = useRouter();
   const setItems = useListStore((state) => state.setItems);
+  const [data, setData] = useState<Item[]>([
+    { id: '1', name: 'Nikolaus' },
+    { id: '2', name: 'Silvester' },
+    { id: '3', name: 'David' },
+    { id: '4', name: 'Lukas' },
+    { id: '5', name: 'Anton' },
+    { id: '6', name: 'Maria' },
+    { id: '7', name: 'Josef' },
+    { id: '8', name: 'Mario' },
+    { id: '9', name: 'Simon' },
+    { id: '10', name: 'Markus' },
+    { id: '11', name: 'Bernd' },
+    { id: '12', name: 'Maximilian' },
+    { id: '13', name: 'Markus Aurelius Dominikus' },
+    { id: '14', name: 'Maximilian Baximilian Raximus' },
+    { id: '15', name: 'Servus Versus Cersus' },
+  ]);
   const [searchQuery, setSearchQuery] = useState<string>('');
   const [filteredData, setFilteredData] = useState<Item[]>([]);
   const [selectedItems, setSelectedItems] = useState<Item[]>(() => {
@@ -38,6 +55,7 @@ const HomeScreen = () => {
     const initialItem = data.find(item => item.id === '1'); 
     return initialItem ? [initialItem] : [];
   });
+  const [inputName, setInputName] = useState('');
 
 
   
@@ -69,6 +87,21 @@ const HomeScreen = () => {
     setSelectedItems(updatedItems);
   };
 
+  const handleAddItem = () => {
+    if (inputName.trim()) {
+      const newItem: Item = {
+        id: String(data.length + 1),
+        name: inputName,
+      };
+      setData([...data, newItem]);
+      setInputName('');
+    }
+  };
+
+  const handleClearSelectedItems = () => {
+    setSelectedItems([]);
+  };
+
   const isItemSelected = (item: Item) => {
     return selectedItems.some((selected) => selected.id === item.id);
   };
@@ -97,6 +130,16 @@ const HomeScreen = () => {
             </TouchableOpacity>
           )}
         </View>
+        <View style={styles.buttonRow}>
+          <Button title="Clear Selected Items" onPress={handleClearSelectedItems} />
+          <Button title="Add Item" onPress={handleAddItem} />
+        </View>
+        <TextInput
+          style={styles.newplayerinput}
+          placeholder="Enter a name"
+          value={inputName}
+          onChangeText={setInputName}
+        />
         <FlatList
           data={filteredData.length > 0 ? filteredData : data}
           keyExtractor={(item) => item.id}
@@ -222,6 +265,17 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
     color: "#3498db", // Blue
     maxWidth: 90,
+  },
+  buttonRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    marginBottom: 16,
+  },
+  newplayerinput: {
+    borderWidth: 1,
+    borderColor: '#ccc',
+    padding: 8,
+    marginBottom: 16,
   },
 });
 
