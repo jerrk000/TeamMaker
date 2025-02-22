@@ -32,6 +32,11 @@ export default function RootLayout() {
       <Stack>
         <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
         <Stack.Screen name="+not-found" />
+        <Stack.Screen name="(non-tabs)/MakeTeamsScreen"
+        options={{
+          title: 'Teams', // Specific header title for this screen
+        }}
+        />
       </Stack>
       <StatusBar style="auto" />
     </ThemeProvider>

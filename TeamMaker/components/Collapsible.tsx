@@ -23,6 +23,7 @@ export function Collapsible({ children, title }: PropsWithChildren & { title: st
           weight="medium"
           color={theme === 'light' ? Colors.light.icon : Colors.dark.icon}
           style={{ transform: [{ rotate: isOpen ? '90deg' : '0deg' }] }}
+          iconSet="material" 
         />
 
         <ThemedText type="defaultSemiBold">{title}</ThemedText>

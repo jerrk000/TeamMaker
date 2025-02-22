@@ -3,30 +3,13 @@ import { View, TextInput, FlatList, Text, StyleSheet, TouchableOpacity, Button }
 import { useRouter } from 'expo-router';
 import { useListStore } from "../../store/useListStore";
 import { SafeAreaView, SafeAreaProvider } from 'react-native-safe-area-context';
+import { IconSymbol } from '@/components/ui/IconSymbol';
 
 
 type Item = {
   id: string;
   name: string;
 };
-
-const data: Item[] = [
-  { id: '1', name: 'Nikolaus' },
-  { id: '2', name: 'Silvester' },
-  { id: '3', name: 'David' },
-  { id: '4', name: 'Lukas' },
-  { id: '5', name: 'Anton' },
-  { id: '6', name: 'Maria' },
-  { id: '7', name: 'Josef' },
-  { id: '8', name: 'Mario' },
-  { id: '9', name: 'Simon' },
-  { id: '10', name: 'Markus' },
-  { id: '11', name: 'Bernd' },
-  { id: '12', name: 'Maximilian' },
-  { id: '13', name: 'Markus Aurelius Dominikus' },
-  { id: '14', name: 'Maximilian Baximilian Raximus' },
-  { id: '15', name: 'Servus Versus Cersus' },
-];
 
 const HomeScreen = () => {
   const router = useRouter();
@@ -91,10 +74,13 @@ const HomeScreen = () => {
     if (inputName.trim()) {
       const newItem: Item = {
         id: String(data.length + 1),
-        name: inputName,
+        name: inputName + " (temp)",
       };
       setData([...data, newItem]);
       setInputName('');
+      if (!selectedItems.some((selected) => selected.id === newItem.id)) {
+        setSelectedItems([...selectedItems, newItem]); //add item if not already selected
+      } 
     }
   };
 
@@ -109,14 +95,17 @@ const HomeScreen = () => {
   const handleSave = () => {
     setItems(selectedItems); // Store the list in Zustand
     router.push({
-      pathname: '/(non-tabs)/MakeTeamsScreen',
-      //params: { selectedItems: JSON.stringify(selectedItems) },
+      pathname: '/MakeTeamsScreen',
+      params: {
+        customTitle: 'Custom Header Title', // Pass dynamic header title
+      },
     });
   };
 
   return (
     <SafeAreaProvider>
       <SafeAreaView style={styles.container}>
+        <Text>Add friends to game</Text>
         <View style={styles.searchContainer}>
           <TextInput
             style={styles.searchBar}
@@ -124,22 +113,27 @@ const HomeScreen = () => {
             value={searchQuery}
             onChangeText={handleSearch}
           />
-          {searchQuery.length > 0 && (
-            <TouchableOpacity onPress={clearSearch} style={styles.clearButton}>
-              <Text style={styles.clearButtonText}>Clear</Text>
-            </TouchableOpacity>
-          )}
+          <View style={styles.clearButton}>
+            <Button color='red' title="Clear" onPress={clearSearch} />
+          </View>
         </View>
         <View style={styles.buttonRow}>
-          <Button title="Clear Selected Items" onPress={handleClearSelectedItems} />
-          <Button title="Add Item" onPress={handleAddItem} />
+          <View style={styles.leftContainer}>
+            <TextInput
+              style={styles.newplayerinput}
+              placeholder="Add temp player"
+              value={inputName}
+              onChangeText={setInputName}
+            />
+            <TouchableOpacity onPress={handleAddItem} style={styles.iconContainer}>
+              <IconSymbol size={28} name='person.badge.plus' color='black' iconSet="material" />
+            </TouchableOpacity>
+          </View>
+          <View style={styles.clearItemsButton}>
+            <Button title="Clear Selection" onPress={handleClearSelectedItems} />
+          </View>
         </View>
-        <TextInput
-          style={styles.newplayerinput}
-          placeholder="Enter a name"
-          value={inputName}
-          onChangeText={setInputName}
-        />
+        
         <FlatList
           data={filteredData.length > 0 ? filteredData : data}
           keyExtractor={(item) => item.id}
@@ -157,25 +151,27 @@ const HomeScreen = () => {
           )}
         />
         <Text style={styles.selectedTitle}>Selected Items: {selectedItems.length}</Text>
-          <FlatList
-            data={selectedItems}
-            keyExtractor={(item) => item.id}
-            renderItem={({ item }) => (
-              <View style={styles.selectedItem}>
-                <Text style={styles.playerlistitemtext}
-                numberOfLines={1} 
-                ellipsizeMode="tail">
-                  {item.name}</Text>
-                <TouchableOpacity onPress={() => handleRemoveItem(item)}>
-                  <Text 
-                  style={styles.cross}>❌</Text>
-                </TouchableOpacity>
-              </View>
-            )}
-            numColumns={3}
-            columnWrapperStyle={selectedItems.length === 1 ? { justifyContent: "center" } : {}}
-            contentContainerStyle={styles.playernameflatList}
-          />
+          <View style={styles.selectedItemsContainer}>
+            <FlatList
+              data={selectedItems}
+              keyExtractor={(item) => item.id}
+              renderItem={({ item }) => (
+                <View style={styles.selectedItem}>
+                  <Text style={styles.playerlistitemtext}
+                  numberOfLines={1} 
+                  ellipsizeMode="tail">
+                    {item.name}</Text>
+                  <TouchableOpacity onPress={() => handleRemoveItem(item)}>
+                    <Text 
+                    style={styles.cross}>❌</Text>
+                  </TouchableOpacity>
+                </View>
+              )}
+              numColumns={3}
+              columnWrapperStyle={selectedItems.length === 1 ? { justifyContent: "center" } : {}}
+              contentContainerStyle={styles.playernameflatList}
+            />
+          </View>
         <Button title="Save Selected Items" onPress={handleSave} />
       </SafeAreaView>
     </SafeAreaProvider>
@@ -201,11 +197,9 @@ const styles = StyleSheet.create({
     marginBottom: 16,
   },
   clearButton: {
-    height: 40,
+    //height: 40,
     marginLeft: 10,
     padding: 5,
-    borderColor: 'red',
-    borderWidth: 1,
     justifyContent: "center",
     alignItems: "center",
   },
@@ -269,14 +263,34 @@ const styles = StyleSheet.create({
   buttonRow: {
     flexDirection: 'row',
     justifyContent: 'space-between',
+    alignItems: 'center',
     marginBottom: 16,
+  },
+  clearItemsButton: {
+    flex: 1, // Takes up available space on the right
+    marginLeft: 20,
+  },
+  leftContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'flex-start',
+    flex: 2, // Takes up more space on the left
   },
   newplayerinput: {
     borderWidth: 1,
     borderColor: '#ccc',
     padding: 8,
-    marginBottom: 16,
+    width: 150, // Fixed width for the TextInput
+    marginRight: 8, // Space between TextInput and Add Item button
   },
+  iconContainer: {
+    borderWidth: 1,
+    borderColor: '#ccc',
+    padding: 8,
+  },
+  selectedItemsContainer: {
+    marginBottom: 10,
+  }
 });
 
 export default HomeScreen;
