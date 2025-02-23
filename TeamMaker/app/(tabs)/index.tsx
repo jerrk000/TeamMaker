@@ -119,7 +119,7 @@ const HomeScreen = () => {
   return (
     <SafeAreaProvider>
       <SafeAreaView style={styles.container}>
-        <Text>Add friends to game</Text>
+      <Text style={styles.header}>Add friends to game</Text>
         <View style={styles.searchContainer}>
           <TextInput
             style={styles.searchBar}
@@ -173,16 +173,15 @@ const HomeScreen = () => {
               data={selectedItems}
               keyExtractor={(item) => item.id}
               renderItem={({ item }) => (
-                <View style={styles.selectedItem}>
-                  <Text style={styles.playerlistitemtext}
-                  numberOfLines={1} 
-                  ellipsizeMode="tail">
-                    {item.name}</Text>
-                  <TouchableOpacity onPress={() => handleRemoveItem(item)}>
-                    <Text 
-                    style={styles.cross}>❌</Text>
-                  </TouchableOpacity>
-                </View>
+                <TouchableOpacity onPress={() => handleRemoveItem(item)}>
+                  <View style={styles.selectedItem}>
+                    <Text style={styles.playerlistitemtext}
+                    numberOfLines={1} 
+                    ellipsizeMode="tail">
+                      {item.name}</Text>
+                      <Text style={styles.cross}>❌</Text>
+                  </View>
+                </TouchableOpacity>
               )}
               numColumns={3}
               columnWrapperStyle={selectedItems.length === 1 ? { justifyContent: "center" } : {}}
@@ -201,6 +200,12 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     padding: 16,
+  },
+  header: {
+    fontSize: 24,
+    fontWeight: 'bold',
+    textAlign: 'center',
+    marginVertical: 5,
   },
   searchBar: {
     flex: 1,
