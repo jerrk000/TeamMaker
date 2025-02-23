@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { View, TextInput, FlatList, Text, StyleSheet, TouchableOpacity, Button } from 'react-native';
+import React, {useState, useEffect} from 'react';
+import { View, TextInput, FlatList, Text, StyleSheet, TouchableOpacity, Button, Keyboard } from 'react-native';
 import { useRouter } from 'expo-router';
 import { useListStore } from "../../store/useListStore";
 import { SafeAreaView, SafeAreaProvider } from 'react-native-safe-area-context';
@@ -39,7 +39,21 @@ const HomeScreen = () => {
     return initialItem ? [initialItem] : [];
   });
   const [inputName, setInputName] = useState('');
+  const [keyboardStatus, setKeyboardStatus] = useState(false);
 
+  useEffect(() => {
+    const showSubscription = Keyboard.addListener('keyboardDidShow', () => {
+      setKeyboardStatus(true);
+    });
+    const hideSubscription = Keyboard.addListener('keyboardDidHide', () => {
+      setKeyboardStatus(false);
+    });
+
+    return () => {
+      showSubscription.remove();
+      hideSubscription.remove();
+    };
+  }, []);
 
   
 
@@ -114,7 +128,9 @@ const HomeScreen = () => {
             onChangeText={handleSearch}
           />
           <View style={styles.clearButton}>
-            <Button color='red' title="Clear" onPress={clearSearch} />
+            <TouchableOpacity onPress={clearSearch} style={styles.iconContainer}>
+              <IconSymbol size={28} name='delete.left.fill' color='black' iconSet="fontawesome6" />
+            </TouchableOpacity>
           </View>
         </View>
         <View style={styles.buttonRow}>
@@ -151,6 +167,7 @@ const HomeScreen = () => {
           )}
         />
         <Text style={styles.selectedTitle}>Selected Items: {selectedItems.length}</Text>
+        {!keyboardStatus ? (
           <View style={styles.selectedItemsContainer}>
             <FlatList
               data={selectedItems}
@@ -172,6 +189,8 @@ const HomeScreen = () => {
               contentContainerStyle={styles.playernameflatList}
             />
           </View>
+          ) : null
+        }
         <Button title="Save Selected Items" onPress={handleSave} />
       </SafeAreaView>
     </SafeAreaProvider>

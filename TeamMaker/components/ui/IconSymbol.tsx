@@ -1,5 +1,6 @@
 import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 import FontAwesome from '@expo/vector-icons/FontAwesome';
+import FontAwesome6 from '@expo/vector-icons/FontAwesome6';
 import { SymbolWeight } from 'expo-symbols';
 import React from 'react';
 import { OpaqueColorValue, StyleProp, ViewStyle } from 'react-native';
@@ -33,6 +34,16 @@ const FONT_AWESOME_MAPPING = {
   >
 >;
 
+// Add your SF Symbol to FontAwesome mappings here.
+const FONT_AWESOME6_MAPPING = {
+  'delete.left.fill': 'delete-left'
+} as Partial<
+  Record<
+    import('expo-symbols').SymbolViewProps['name'],
+    React.ComponentProps<typeof FontAwesome6>['name']
+  >
+>;
+
 export type IconSymbolName = keyof typeof MATERIAL_ICONS_MAPPING;
 
 /**
@@ -52,10 +63,13 @@ export function IconSymbol({
   color: string | OpaqueColorValue;
   style?: StyleProp<ViewStyle>;
   weight?: SymbolWeight;
-  iconSet?: 'material' | 'fontawesome'; // Specify which icon set to use
+  iconSet?: 'material' | 'fontawesome' | 'fontawesome6'; // Specify which icon set to use
 }) {
   if (iconSet === 'fontawesome') {
     return <FontAwesome color={color} size={size} name={FONT_AWESOME_MAPPING[name]} style={style} />;
+  }
+  else if (iconSet === 'fontawesome6') {
+    return <FontAwesome6 color={color} size={size} name={FONT_AWESOME6_MAPPING[name]} style={style} />;
   }
 
   // Default to MaterialIcons
