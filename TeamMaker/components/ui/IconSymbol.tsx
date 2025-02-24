@@ -14,6 +14,9 @@ const MATERIAL_ICONS_MAPPING = {
   'chevron.left.forwardslash.chevron.right': 'code',
   'chevron.right': 'chevron-right',
   'person.badge.plus': 'person-add',
+  'line.horizontal.3': 'menu',
+  'sportscourt': 'sports-volleyball',
+  'gear': 'settings',
 } as Partial<
   Record<
     import('expo-symbols').SymbolViewProps['name'],
@@ -27,6 +30,8 @@ const FONT_AWESOME_MAPPING = {
   'paperplane.fill': 'paper-plane',
   'chevron.left.forwardslash.chevron.right': 'code',
   'chevron.right': 'chevron-right',
+  'person.3.fill': 'group',
+  'chart.bar.fill': 'bar-chart',
 } as Partial<
   Record<
     import('expo-symbols').SymbolViewProps['name'],
