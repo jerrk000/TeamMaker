@@ -1,12 +1,12 @@
-import React from 'react';
-import { SafeAreaView, View, Text, StyleSheet } from 'react-native';
+import React, { useState } from 'react';
+import { SafeAreaView, View, Text, StyleSheet, Button, Modal, TextInput } from 'react-native';
 import {RadarChart} from '@salmonco/react-native-radar-chart'; 
 //It sucks that I have to use a radar chart from a random person
 //TODO maybe implement radar chart yourself?
 
 
 const PlayerStatsScreen = () => {
-  const data = [
+  const [data, setData] = useState([
     {label: 'Speed', value: 30},
     {label: 'Fun', value: 55},
     {label: 'Height', value: 70},
@@ -15,11 +15,26 @@ const PlayerStatsScreen = () => {
     {label: 'data6', value: 60},
     {label: 'data7', value: 38},
     {label: 'data8', value: 65},
-  ];
+  ]);
+
+  const [modalVisible, setModalVisible] = useState(false);
+  const [editedData, setEditedData] = useState([...data]);
+
+  const updateData = () => {
+    setData(
+      editedData.map(item => ({
+        label: item.label,  // Preserve the label
+        value: parseFloat(item.value) || 0, // Ensure numeric values
+      }))
+    );
+    setModalVisible(false);
+  };
+  
 
 
   return (
     <SafeAreaView style={styles.container}>
+      <Text style={styles.header}>Your Stats</Text>
       <RadarChart
         data={data}
         maxValue={100}
@@ -38,6 +53,31 @@ const PlayerStatsScreen = () => {
         dataStrokeWidth={2}
         //isCircle
       />
+
+      <Button title="Edit Data" onPress={() => setModalVisible(true)} />
+      
+      <Modal visible={modalVisible} animationType="slide" transparent={true}>
+        <View style={styles.modalContainer}>
+          <Text style={styles.modalTitle}>Edit Data</Text>
+          {data.map((item, index) => (
+            <View key={index} style={styles.inputContainer}>
+              <Text>{item.label}:</Text>
+              <TextInput
+                style={styles.input}
+                keyboardType="numeric"
+                value={String(editedData[index]?.value || '')} // Ensure value is valid
+                onChangeText={text => {
+                  const newData = [...editedData];
+                  newData[index] = { ...newData[index], value: text }; // Update value while preserving label
+                  setEditedData(newData);
+                }}
+              />
+            </View>
+          ))}
+          <Button title="Save" onPress={updateData} />
+          <Button title="Cancel" onPress={() => setModalVisible(false)} color="red" />
+        </View>
+      </Modal>  
     </SafeAreaView>
   );
 };
@@ -47,6 +87,40 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
+  },
+  header: {
+    fontSize: 24,
+    fontWeight: 'bold',
+    textAlign: 'center',
+    marginVertical: 5,
+  },
+  modalContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: 'rgba(0,0,0,0.5)',
+    padding: 20,
+  },
+  modalTitle: {
+    fontSize: 22,
+    fontWeight: 'bold',
+    marginBottom: 10,
+    color: 'white',
+  },
+  inputContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: 'white',
+    padding: 10,
+    marginBottom: 10,
+    borderRadius: 5,
+  },
+  input: {
+    marginLeft: 10,
+    borderBottomWidth: 1,
+    borderBottomColor: 'gray',
+    flex: 1,
+    padding: 5,
   },
 });
 
