@@ -1,9 +1,9 @@
 import { createTamagui } from 'tamagui'
-import { themes } from './constants/themes'
+import { custom_themes } from './constants/themes'
 import { defaultConfig } from '@tamagui/config/v4'
 
 export const tamaguiConfig = createTamagui({
-  themes,
+  custom_themes,
   ...defaultConfig,
 })
 
