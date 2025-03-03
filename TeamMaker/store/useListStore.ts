@@ -1,8 +1,13 @@
 import { create } from "zustand";
 
+type Item = {
+  id: string;
+  name: string;
+};
+
 interface ListStore {
-  items: string[];
-  setItems: (items: string[]) => void;
+  items: Item[];
+  setItems: (items: Item[]) => void;
 }
 
 export const useListStore = create<ListStore>((set) => ({

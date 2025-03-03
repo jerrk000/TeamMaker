@@ -1,9 +1,10 @@
 import React, {useState, useEffect} from 'react';
-import { View, TextInput, FlatList, Text, StyleSheet, TouchableOpacity, Button, Keyboard } from 'react-native';
+import { FlatList, Text, StyleSheet, TouchableOpacity, Keyboard } from 'react-native';
 import { useRouter } from 'expo-router';
 import { useListStore } from "../../store/useListStore";
 import { SafeAreaView, SafeAreaProvider } from 'react-native-safe-area-context';
 import { IconSymbol } from '@/components/ui/IconSymbol';
+import { Button, View, XStack, Input } from 'tamagui';
 
 
 type Item = {
@@ -120,40 +121,36 @@ const HomeScreen = () => {
     <SafeAreaProvider>
       <SafeAreaView style={styles.container}>
       <Text style={styles.header}>Add friends to game</Text>
-        <View style={styles.searchContainer}>
-          <TextInput
-            style={styles.searchBar}
-            placeholder="Search..."
-            value={searchQuery}
-            onChangeText={handleSearch}
-          />
+        <XStack>
+        <Input flex={1} size={"$4"} placeholder={"Search..."} value={searchQuery}
+            onChangeText={handleSearch} />
           <View style={styles.clearButton}>
             <TouchableOpacity onPress={clearSearch} style={styles.iconContainer}>
-              <IconSymbol size={28} name='delete.left.fill' color='black' iconSet="fontawesome6" />
+              <IconSymbol size={20} name='delete.left.fill' color='black' iconSet="fontawesome6" />
             </TouchableOpacity>
           </View>
-        </View>
-        <View style={styles.buttonRow}>
+        </XStack>
+        <XStack>
           <View style={styles.leftContainer}>
-            <TextInput
+            <Input flex={1} size={"$3"}
               style={styles.newplayerinput}
               placeholder="Add temp player"
               value={inputName}
               onChangeText={setInputName}
             />
             <TouchableOpacity onPress={handleAddItem} style={styles.iconContainer}>
-              <IconSymbol size={28} name='person.badge.plus' color='black' iconSet="material" />
+              <IconSymbol size={20} name='person.badge.plus' color='black' iconSet="material" />
             </TouchableOpacity>
           </View>
           <View style={styles.clearItemsButton}>
-            <Button title="Clear Selection" onPress={handleClearSelectedItems} />
+            <Button onPress={handleClearSelectedItems} >Clear all</Button>
           </View>
-        </View>
+        </XStack>
         
         <FlatList
           data={filteredData.length > 0 ? filteredData : data}
           keyExtractor={(item) => item.id}
-          renderItem={({ item }) => (
+          renderItem={({ item }: { item: Item })  => (
             <TouchableOpacity onPress={() => handleItemPress(item)}>
               <View style={[
                 styles.item,
@@ -190,7 +187,7 @@ const HomeScreen = () => {
           </View>
           ) : null
         }
-        <Button title="Save Selected Items" onPress={handleSave} />
+        <Button onPress={handleSave}>Save Selected Items</Button>
       </SafeAreaView>
     </SafeAreaProvider>
   );
@@ -213,12 +210,6 @@ const styles = StyleSheet.create({
     borderColor: 'gray',
     borderWidth: 1,
     paddingLeft: 8,
-  },
-  searchContainer: {
-    flexDirection: "row",
-    alignItems: "center",
-    paddingHorizontal: 10,
-    marginBottom: 16,
   },
   clearButton: {
     //height: 40,
@@ -308,6 +299,8 @@ const styles = StyleSheet.create({
     marginRight: 8, // Space between TextInput and Add Item button
   },
   iconContainer: {
+    justifyContent: "flex-start",
+    alignItems: "center",
     borderWidth: 1,
     borderColor: '#ccc',
     padding: 8,
